@@ -1,27 +1,37 @@
 # -*- coding:utf-8 -*-
 
+from settings import *
 import sys
 import requests
 from requests.auth import HTTPBasicAuth
-import settings
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 COOKIE = None
 
+global NAME
+global PASSWORD
+global GITNAME
+global GITPASSWORD
+
 
 class Gitstar():
-    def __init__(self):
+    def __init__(self, name, password, git_name, git_password):
+        self.NAME = name
+        self.PASSWORD = password
+        self.GITNAME = git_name
+        self.GITPASSWORD = git_password
+
         self.cookie = None
 
     def login_gitstar(self):
         r = requests.post("http://gitstar.top:88/api/user/login",
-                          params={'username': settings.NAME, 'password': settings.PASSWORD})
+                          params={'username': self.NAME, 'password': self.PASSWORD})
         self.cookie = r.headers['Set-Cookie']
 
     def get_gitstar_follow_recommend(self):
         self.login_gitstar()
-        url = "http://gitstar.top:88/api/users/%s/status/follow-recommend" % settings.NAME
+        url = "http://gitstar.top:88/api/users/%s/status/follow-recommend" % self.NAME
         response = requests.get(url, headers={'Accept': 'application/json', 'Cookie': self.cookie})
         jsn = response.json()
         list = []
@@ -30,7 +40,7 @@ class Gitstar():
         return list
 
     def follow(self, url):
-        AUTH = HTTPBasicAuth(settings.GITNAME, settings.GITPASSWORD)
+        AUTH = HTTPBasicAuth(self.GITNAME, self.GITPASSWORD)
         requests.put("https://api.github.com/user/following/" + url
                      , headers={'Content-Length': '0'}
                      , auth=AUTH)
@@ -41,7 +51,7 @@ class Gitstar():
         print "update:" + str(res.status_code == 200)
 
 
-G = Gitstar()
+G = Gitstar(NAME, PASSWORD, GITNAME, GITPASSWORD)
 FollowList = G.get_gitstar_follow_recommend()
 t = len(FollowList)
 print "need follow : %d" % t
