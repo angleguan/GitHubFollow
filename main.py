@@ -64,4 +64,8 @@ class Gitstar():
             self.update_gitstar()
 
 
-Gitstar(NAME, PASSWORD, GITNAME, GITPASSWORD).run_follow()
+if 'NAME' in dir():
+    Gitstar(NAME, PASSWORD, GITNAME, GITPASSWORD).run_follow()
+else:
+    for i in range(0, len(NAMES)):
+        Gitstar(NAMES[i], PASSWORDS[i], GITNAMES[i], GITPASSWORDS[i]).run_follow()
