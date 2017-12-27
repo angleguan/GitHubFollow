@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
+
 import sys
 import requests
-import json
 from requests.auth import HTTPBasicAuth
 import settings
 
@@ -14,13 +14,13 @@ class Gitstar():
     def __init__(self):
         self.cookie = None
 
-    def loginGitStar(self):
+    def login_gitstar(self):
         r = requests.post("http://gitstar.top:88/api/user/login",
                           params={'username': settings.NAME, 'password': settings.PASSWORD})
         self.cookie = r.headers['Set-Cookie']
 
-    def getGitFollowList(self):
-        self.loginGitStar()
+    def get_gitstar_follow_recommend(self):
+        self.login_gitstar()
         url = "http://gitstar.top:88/api/users/%s/status/follow-recommend" % settings.NAME
         response = requests.get(url, headers={'Accept': 'application/json', 'Cookie': self.cookie})
         jsn = response.json()
@@ -42,7 +42,7 @@ class Gitstar():
 
 
 G = Gitstar()
-FollowList = G.getGitFollowList()
+FollowList = G.get_gitstar_follow_recommend()
 t = len(FollowList)
 print "need follow : %d" % t
 i = 1
