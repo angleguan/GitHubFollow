@@ -50,16 +50,18 @@ class Gitstar():
         res = requests.get(url, headers={'Accept': 'application/json', 'Cookie': self.cookie})
         print "update:" + str(res.status_code == 200)
 
+    def run_follow(self):
+        FollowList = self.get_gitstar_follow_recommend()
+        t = len(FollowList)
+        print "need follow for [%s]: %d" % (self.NAME, t)
+        i = 1
+        for url in FollowList:
+            self.follow(url)
+            print "[%d/%d]Followed! -->%s" % (i, t, url)
+            i = i + 1
 
-G = Gitstar(NAME, PASSWORD, GITNAME, GITPASSWORD)
-FollowList = G.get_gitstar_follow_recommend()
-t = len(FollowList)
-print "need follow : %d" % t
-i = 1
-for url in FollowList:
-    G.follow(url)
-    print "[%d/%d]Followed! -->%s" % (i, t, url)
-    i = i + 1
+        if t > 0:
+            self.update_gitstar()
 
-if t > 0:
-    G.update_gitstar()
+
+Gitstar(NAME, PASSWORD, GITNAME, GITPASSWORD).run_follow()
